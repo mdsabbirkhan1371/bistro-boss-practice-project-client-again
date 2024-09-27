@@ -1,36 +1,25 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
 import {
   loadCaptchaEnginge,
   LoadCanvasTemplate,
   validateCaptcha,
 } from 'react-simple-captcha';
-import { AuthContext } from '../../Porovider/AuthProvider';
-import { Link } from 'react-router-dom';
-
-const Login = () => {
+const SignUp = () => {
   const [disable, setDisable] = useState(true);
-  const { createUser } = useContext(AuthContext);
-
-  const handleLogin = event => {
+  const captchaRef = useRef(null);
+  const handleSignUp = event => {
     event.preventDefault();
     const form = event.target;
-
+    const name = form.name.value;
     const email = form.email.value;
     const password = form.password.value;
-
-    // create user
-    createUser(email, password).then(result => {
-      const user = result.user;
-      console.log('User Created', user);
-    });
-
-    console.log({ email, password });
+    console.log({ email, password, name });
   };
 
   useEffect(() => {
     loadCaptchaEnginge(6);
   }, []);
-  const captchaRef = useRef(null);
 
   const handleCaptcha = () => {
     const userCaptcha = captchaRef.current.value;
@@ -40,12 +29,11 @@ const Login = () => {
       setDisable(true);
     }
   };
-
   return (
     <div className="hero bg-base-200 min-h-screen">
       <div className="hero-content flex-col lg:flex-row-reverse lg:justify-between w-full lg:px-16 px-4">
         <div className="text-center lg:text-left lg:w-1/2 w-full">
-          <h1 className="text-3xl md:text-5xl font-bold">Login now!</h1>
+          <h1 className="text-3xl md:text-5xl font-bold">Sign Up</h1>
           <p className="py-4 md:py-6 text-sm md:text-base">
             Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda
             excepturi exercitationem quasi. In deleniti eaque aut repudiandae et
@@ -53,7 +41,19 @@ const Login = () => {
           </p>
         </div>
         <div className="card bg-base-100 w-full lg:w-1/2 md:max-w-md max-w-sm shadow-2xl">
-          <form onSubmit={handleLogin} className="card-body">
+          <form onSubmit={handleSignUp} className="card-body">
+            <div className="form-control">
+              <label className="label">
+                <span className="label-text">Name</span>
+              </label>
+              <input
+                type="text"
+                name="name"
+                placeholder="Enter your Name"
+                className="input input-bordered"
+                required
+              />
+            </div>
             <div className="form-control">
               <label className="label">
                 <span className="label-text">Email</span>
@@ -77,11 +77,6 @@ const Login = () => {
                 className="input input-bordered"
                 required
               />
-              <label className="label">
-                <a href="#" className="label-text-alt link link-hover">
-                  Forgot password?
-                </a>
-              </label>
             </div>
             <div className="form-control">
               <label className="label">
@@ -107,14 +102,14 @@ const Login = () => {
                 disabled={disable}
                 className="btn btn-primary"
                 type="submit"
-                value="Login"
+                value="Sign Up"
               />
             </div>
             <p className=" text-2xl p-4">
               <small>
-                New Here?{' '}
-                <Link className="text-indigo-600" to="/signUp">
-                  Create an Account
+                Already have an Account?
+                <Link className="text-indigo-600" to="/login">
+                  Login here
                 </Link>
               </small>
             </p>
@@ -125,4 +120,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default SignUp;
