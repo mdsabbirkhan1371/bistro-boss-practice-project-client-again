@@ -1,6 +1,7 @@
 import { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../../Porovider/AuthProvider';
+import { GiShoppingCart } from 'react-icons/gi';
 
 const NavBar = () => {
   const { user, logOut } = useContext(AuthContext);
@@ -24,6 +25,12 @@ const NavBar = () => {
       </li>
       <li>
         <Link to="/secret">Secret</Link>
+      </li>
+      <li>
+        <Link to="/">
+          <GiShoppingCart className="text-white text-2xl" />
+          <div className="badge badge-secondary">+0</div>
+        </Link>
       </li>
       {user ? (
         <>
