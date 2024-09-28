@@ -5,13 +5,16 @@ import {
   validateCaptcha,
 } from 'react-simple-captcha';
 import { AuthContext } from '../../Porovider/AuthProvider';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
+import Swal from 'sweetalert2';
 
 const Login = () => {
   const [disable, setDisable] = useState(true);
   const { signIn } = useContext(AuthContext);
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || '/';
 
   const handleLogin = event => {
     event.preventDefault();
@@ -25,7 +28,14 @@ const Login = () => {
       const user = result.user;
       console.log('Sign In Successful', user);
       if (user) {
-        navigate('/');
+        Swal.fire({
+          position: 'top',
+          icon: 'success',
+          title: 'Login Success',
+          showConfirmButton: false,
+          timer: 1500,
+        });
+        navigate(from, { replace: true });
       }
     });
 

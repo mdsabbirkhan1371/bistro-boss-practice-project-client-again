@@ -1,23 +1,44 @@
 import React, { useContext } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../Porovider/AuthProvider';
 import { Helmet } from 'react-helmet-async';
+import Swal from 'sweetalert2';
 
 const SignUp = () => {
-  const { createUser } = useContext(AuthContext);
-
+  const { createUser, updateUserProfile } = useContext(AuthContext);
+  const navigate = useNavigate();
   const handleSignUp = event => {
     event.preventDefault();
     const form = event.target;
     const name = form.name.value;
+    const photo = form.photo.value;
     const email = form.email.value;
     const password = form.password.value;
-    console.log({ name, email, password });
+    console.log({ name, email, password, photo });
     createUser(email, password).then(res => {
       const user = res.user;
+      updateUserProfile(name, photo)
+        .then(() => {
+          console.log('Updated user');
+          if (user) {
+            Swal.fire({
+              position: 'top',
+              icon: 'success',
+              title: 'Your Account has been created!!',
+              showConfirmButton: false,
+              timer: 1500,
+            });
+
+            form.reset();
+            navigate('/');
+          }
+        })
+        .catch(error => {
+          console.error(error);
+        });
+
       console.log('User Created', user);
     });
-    form.reset();
   };
   return (
     <>
@@ -44,6 +65,18 @@ const SignUp = () => {
                   type="text"
                   name="name"
                   placeholder="Enter your Name"
+                  className="input input-bordered"
+                  required
+                />
+              </div>
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text">Photo URL</span>
+                </label>
+                <input
+                  type="text"
+                  name="photo"
+                  placeholder="Enter Photo Url Link"
                   className="input input-bordered"
                   required
                 />
